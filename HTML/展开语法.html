@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // ...[]语法 收 放
+    //  语法在等号右边是放，在等号左边是收
+    // let xx = [1, 2, 3]
+    // let [a, b, c] = [...xx]
+    // console.log(a, b, c) //1,2,3
+
+    // let [...aa] = [1, 2, 3, 4]
+    // console.log(aa) // 1,2,3,4
+
+    // let [x, ...bb] = [1, 2, 3, 4]
+    // console.log(bb) //2,3,4  x = 1
+
+    function sum(dis = 0, ...price) {
+      let total = price.reduce((a, b) => a + b)
+      return Math.round(total * dis)
+    }
+    console.log(sum(0.9, 10, 100, 1000, 10000))
+  </script>
+
+</body>
+
+</html>

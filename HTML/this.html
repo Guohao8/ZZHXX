@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 如果这个函数是对象的属性，或者类方法，那么this指向的是当前对象
+    // 如果只是一个普通的函数this指向window
+    // this只能在自己的作用域环境下查找  可以在外部定义一个常量将this赋值给这个常量，别的地方也就可以是用当前作用域下的this
+    // 箭头函数中的this指向的作用域是当前函数的上下文，也就是父级环境作用域下的this
+    // 箭头函数没有this，可以理解为箭头函数中的this会继承定义函数时的上下文，相当于和外层的函数指向同一个this
+
+    // let edu = {
+    //   site: "xxxx",
+    //   show: function () {
+    //     function render() {
+    //       console.log(this) //window
+    //     }
+    //     return this.site //xxxx  this指向当前对象
+    //   }
+    // }
+    // console.log(edu.show())
+
+
+
+    // 封装出来的方法
+    function Request() {
+      this.get = function (params = {}) {
+        let option = Object.keys(params)
+          .map(i => i + "=" + params[i])
+          .join("&")
+
+        return `获取数据 API：${this.url}?${option}`
+      }
+    }
+
+    function Article() {
+      this.url = "xxxxxx/index"
+      Request.apply(this)
+    }
+    let HD = new Article()
+    console.log(HD.get({
+      row: 10,
+      start: 3
+    }))
+
+    function Lesson() {
+      this.url = "fffff/index"
+      Request.call(this)
+    }
+    let XX = new Lesson()
+    console.log(XX.get({
+      row: 18,
+      start: 8
+    }))
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text" v-model="title" />
+  <input type="text" v-model="title" />
+  <div v-bind="title"></div>
+  <script>
+    // 使用方式
+    "use strict";
+    const hd = {
+      name: "后盾人"
+    };
+    const proxy = new Proxy(hd, {
+      get(obj, property) {
+        return obj[property];
+      },
+      set(obj, property, value) {
+        obj[property] = value;
+        return true;
+      }
+    });
+    proxy.age = 10;
+    console.log(hd);
+
+    // 函数代理
+    function factorial(num) {
+      return num == 1 ? 1 : num * factorial(num - 1);
+    }
+    let proxy = new Proxy(factorial, {
+      apply(func, obj, args) {
+        console.time("run");
+        func.apply(obj, args);
+        console.timeEnd("run");
+      }
+    });
+    proxy.apply(this, [1, 2, 3]);
+
+    // 截取字符串
+    const stringDot = {
+      get(target, key) {
+        const title = target[key].title;
+        const len = 5;
+        return title.length > len ?
+          title.substr(0, len) + ".".repeat(3) :
+          title;
+      }
+    };
+    const lessons = [{
+        title: "媒体查询响应式布局",
+        category: "css"
+      },
+      {
+        title: "FLEX 弹性盒模型",
+        category: "css"
+      },
+      {
+        title: "MYSQL多表查询随意操作",
+        category: "mysql"
+      }
+    ];
+    const stringDotProxy = new Proxy(lessons, stringDot);
+    console.log(stringDotProxy[0]);
+  </script>
+</body>
+
+</html>

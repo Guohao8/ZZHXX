@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // 工厂模式
+    function car(name, age) {
+      return {
+        name,
+        age,
+        show() {
+          console.log("xxxxx")
+        },
+        info() {
+          console.log("aaaaaaaaa")
+        }
+      }
+    }
+
+    let xx = car("xxxx")
+    xx.info() //aaaaaaaa
+    xx.show() //xxxxx
+
+    // 构造函数
+    function User(name) {
+      this.name = name
+      this.show = function () {
+        console.log(this.name)
+      }
+      //构造函数中 this指向当前调用方法的对象
+    }
+
+    let bb = new User("qqqqq")
+    bb.show()
+
+
+    let time = new Date()
+    console.log(time.valueOf())
+
+
+    // 面向对象的封装和抽象
+    // 抽象相当于把属性和方法封装到内部，不让外部进行访问
+    // 通过作用域和闭包 不让外部改变 实现简单的抽象
+    function UserTwo(name, age) {
+      let data = {
+        name,
+        age
+      }
+      let info = function () {
+        return data.name > 50 ? "xx" : "aa"
+      }
+      this.show = function () {
+        console.log(data.name + info())
+      }
+    }
+    let lj = new UserTwo("xxxx")
+
+
+
+    // 对象属性的操作
+    //   writable: false //属性不可被修改
+    // enumerable:true //属性不可被遍历
+    // configurable 不可删除
+    // Object.freeze()   冻结变量
+    // Object.isFrozen()  判断是不是冻结状态
+
+
+    // 本地保存token登录数据
+    let Request = {
+      set token(content) {
+        localStorage.setItem("token", content)
+      },
+      get token() {
+        let token = localStorage.getItem("token")
+        if (!token) {
+          console.log("请先登录")
+        }
+        return token
+      }
+    }
+
+    Request.token = "3a4das54das52d4as5"
+    console.log(Request.token)
+  </script>
+</body>
+
+</html>

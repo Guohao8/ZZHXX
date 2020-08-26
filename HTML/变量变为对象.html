@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    let a = "xxxx"
+    let b = "ffffff"
+    let c = {
+      a,
+      b
+    } //a:"xxxx",b:"ffffff"
+
+    let c = {
+      a: a,
+      b: b
+    }
+    // 左边的a为对象，右边的a为参数，两个值一样的时候可以简写
+
+
+    // 浅复制
+    let xx = {
+      name: "aaaa",
+      sex: "aaaaaaa"
+    }
+    let obj = Object.assign({}, xx)
+    // Object.assign({},变量) 相当于是将变量里面的值，压到了{}里面，然后再将这个{}赋值给新定义的变量
+    let aaaa = {
+      name: "aaaaaa",
+      sex: "xxxxxxx"
+    }
+    let obj = {
+      ...aaaa
+    }
+    // 展开语法 花括号相当于新开辟一块内存空间，然后将aaaa变量里面的值复制过来
+    // 也是不影响原来的变量的
+
+
+
+    // for/of用于遍历迭代对象，不能直接操作对象。但Object对象的keys/方法返回的是迭代对象。
+    const hd = {
+      name: "后盾人",
+      age: 10
+    };
+    // 获取所有对象属性
+    for (const key of Object.keys(hd)) {
+      console.log(key);
+    }
+
+    // 同时获取属性名与值
+    for (const array of Object.entries(hd)) {
+      console.log(array);
+    }
+
+    // 深拷贝
+    let aaaa = {
+      name: "xxxxxx",
+      user: {
+        name: "aaaaaaaaa"
+      },
+    }
+
+    function copy(obj) {
+      let res = {}
+      for (const key in obj) {
+        res[key] =
+          // 递归判断
+          typeof obj[key] == 'object' ? copy(obj[key]) : obj[key]
+      }
+      return res
+    }
+
+    let aa = copy(data)
+
+
+    let aaaa = {
+      name: "xxxxxx",
+      user: {
+        name: "aaaaaaaaa"
+      },
+      arr: []
+    }
+
+    function copy(obj) {
+      let res = ob instanceof Array ? [] : {}
+      for (const [k, v] of Object.entries(obj)) {
+        res[k] =
+          // 递归判断
+          typeof v == 'object' ? copy(v) : v
+      }
+      return res
+    }
+
+    let aa = copy(data)
+    aa.arr.push("abc")
+  </script>
+</body>
+
+</html>

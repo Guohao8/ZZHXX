@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="/CSS/jquery-editable-select.css">
+  <script src="/JS/jquery-3.5.1.min.js"></script>
+  <script src="/JS/jquery-editable-select.js"></script>
+</head>
+
+<body>
+  <div class="row-fluid">
+    <div class="span7">
+      <select name="basic" id="basic">
+        <option value="">BMW</option>
+        <option value="">Form</option>
+        <option value="">Jeep</option>
+        <option value="">Nini</option>
+        <option value="" selected="selected">Audi</option>
+      </select>
+    </div>
+    <br>
+  </div>
+
+
+</body>
+
+<script>
+  //    filter：过滤，即当输入内容时下拉选项会匹配输入的字符，支持中文，true/false，默认true。
+
+  // effects：动画效果，当触发弹出下拉选择框时的下拉框展示过渡效果，有default，slide，fade三个值，默认是default。
+
+  // duration：下拉选项框展示的过渡动画速度，有fast，slow，以及数字（毫秒），默认是fast。
+
+  // 事件
+
+  // onCreate：当输入时触发。
+
+  // onShow：当下拉时触发。
+
+  // onHide：当下拉框隐藏时触发。
+
+  // onSelect：当下拉框中的选项被选中时触发。
+
+  $('#basic').editableSelect({
+    filter: true
+  })
+</script>
+
+</html>

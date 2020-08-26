@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // “假值”总共只有6个：
+    // false，undefined，null，0，""（空字符串），NaN
+    // 除此之外的所有值，都是“真值”，即在逻辑判断中可以当true来使用
+
+    //  原因分析：if ([]) {} 里发生自动类型转换，[] => Boolean，从object到布尔型，结果是true。事实上，所有的object转型到Boolean，都是true，[]和{}都是对象。
+    //    [] == true 里不发生自动类型转换，这条语句只比较左右的“值”是否相等,所以要先化为number类型，true转化为数字1就不用说了，主要分析一下[]怎么转化为0的，
+    //    这里涉及到ToPrimitive方法的操作. []会先调用valueOf方法，返回数组本身不是原始值，所以继续调用toString方法，返回' ',从而Number（' '）=0,而0!=1,所以返回false。
+
+    // 总结：Boolean([]) => true;//直接作条件
+    // 　　　Boolean(Number([])) => false;//当与布尔值做比较时
+    // 　　　Number({})//NaN,不等于任何数包括自己
+
+
+    // ToPrimitive()
+
+    // 应用场景：在JavaScript中，如果想要将对象转换成基本类型时，也就是所谓的拆箱时，会调用toPrimitive()。
+
+    // 函数结构：toPrimitive(input,preferedType?)
+
+    // 参数解释：
+
+    // input是输入的值，即要转换的对象，必选；
+
+    // preferedType是期望转换的基本类型，他可以是字符串，也可以是数字。选填，默认为number；
+
+    // 执行过程：
+
+    // 如果转换的类型是number，会执行以下步骤：
+
+    // 1. 如果input是原始值，直接返回这个值；
+
+    // 2. 否则，如果input是对象，调用input.valueOf()，如果结果是原始值，返回结果；
+
+    // 3. 否则，调用input.toString()。如果结果是原始值，返回结果；
+
+    // 4. 否则，抛出错误。
+
+    // 如果转换的类型是String，2和3会交换执行，即先执行toString()方法。
+
+    // 你也可以省略preferedType，此时，日期会被认为是字符串，而其他的值会被当做Number。
+
+
+    // valueOf()
+
+    // valueOf()函数用于返回指定对象的原始值。
+    // 该方法属于Object对象，由于所有的对象都"继承"了Object的对象实例，因此几乎所有的实例对象都可以使用该方法。
+    // 语法：object.valueOf( )
+    // 返回值
+    // valueOf()函数返回指定对象的原始值。
+    // JavaScript的许多内置对象都重写了该函数，以实现更适合自身的功能需要。因此，不同类型对象的valueOf()方法的返回值和返回值类型均可能不同。
+
+    //  对象	    返回值
+    // Array	    数组实例对象。
+    // Boolean	  布尔值。
+    // Date	      以毫秒数存储的时间值，从 UTC 1970 年 1 月 1 日午夜开始计算。
+    // Function	  函数本身。
+    // Number	    数字值。
+    // Object	    对象本身。这是默认设置。
+    // String	    字符串值。
+
+
+    // toString()
+
+    // toString()函数用于将当前对象以字符串的形式返回。
+    // 该方法属于Object对象，由于所有的对象都"继承"了Object的对象实例，因此几乎所有的实例对象都可以使用该方法。
+    // 语法         object.toString( )
+    // 返回值       toString()函数的返回值为String类型。返回当前对象的字符串形式。
+
+
+    if ([]) {
+      console.log("x")
+    }
+    if ({}) {
+      console.log("aa")
+    }
+    if ([] == false) {
+      console.log("vvv")
+    }
+    if ({} == false) {
+      console.log("dddd")
+    }
+  </script>
+</body>
+
+</html>

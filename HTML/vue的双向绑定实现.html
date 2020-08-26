@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <input type="text" v-model="title" />
+  <input type="text" v-model="title" />
+  <div v-bind="title"></div>
+  <script>
+    // 定义一个代理仓库存储数据，然后创建几个表单，任何一个表单更改数据其实都是更改了仓库里面的数据，然后仓库要页面从新渲染的时候，再同步更新其他的数据
+    function View() {
+      // 设置代理拦截
+      let proxy = new Proxy({}, {
+        get(obj, property) {},
+        set(obj, property, value) {
+          obj[property] = value
+          document.querySelectorAll(
+            `[v-model="${property}"],[v-bind="${property}"] `
+          ).forEach(item => {
+            item.innerHTML = value, item.value = value
+          })
+        }
+      })
+      // 初始化绑定元素事件
+      this.run = function () {
+        const xx = document.querySelectorAll("[v-model]")
+        xx.forEach(item => {
+          item.addEventListener("keyup", function () {
+            proxy[this.getAttribute("v-model")] = this.value
+          })
+        })
+      }
+    }
+    let ff = new View().run()
+  </script>
+</body>
+
+</html>
