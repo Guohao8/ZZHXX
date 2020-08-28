@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <script>
+    function get(obj, property, defaultValue) {
+      let p = property.split('.')
+      let len = p.length;
+      let cur = obj
+      for (let i = 0; i < len; i++) {
+        if (p[i].indexOf('[') == -1) {
+          if (cur[p[i]]) {
+            cur = cur[p[i]]
+          } else {
+            return defaultValue
+          }
+        } else {
+          let [k, n] = p[i].split(/[\[|\]]/)
+          cur = cur[k]
+          console.log(Object.prototype.toString.call(cur))
+          if (Object.prototype.toString.call(cur).indexOf('Array') == -1) return defaultValue
+          cur = cur[n]
+        }
+      }
+      return cur
+    }
+  </script>
+</body>
+
+</html>
