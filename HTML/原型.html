@@ -1,118 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
+  <body>
+    <button class="aaaa">qqqqq</button>
+    <button>ddddddddd</button>
 
-<body>
+    <script>
+      // 通过对象可以找到原型，通过构造器可以找到构造函数
+      // 原型就是对象，对象就是原型，
+      // 构造函数当成对象调用时调用的原型是__proto__，它只能服务于自己
+      // 构造函数，new出来对象时，用的原型是prototype，往构造函数添加方法用的原型就是prototype
+      // Object.getPrototypeOf()可以找到原型
+      // Object.setPrototypeOf(a,b)可以设置父级原型,设置b为a的父级原型
+      // 一个函数内处理的结果可以使用return 返回，这样在调用函数的地方就可以用变量接收返回
+      // 原型链就是一个对象按照原型一级一级的向上查找，每一级的原型都会指向上一级的原型，每个原型之间都会链接起来。查找的这个过程，形成的这个链条就是原型链
+      // b.isPrototypeOf(a)  判断b对象是否在a对象的原型链上    检测一个对象是否在另一个对象的原型链上
+      // a instanceOf A  检测a对象的原型链上是否有构造函数A的prototype    检测一个对象的原型链上是否含有指定的构造函数得到prototype
+      // "name" in  a  检测name属性是否在a对象上，还会检测是否在a对象的原型链上
+      // a.hasOwnPrototype("name") 只检测当前对象，不会攀升至原型链
+      // 使用call，apply可以借助其他原型上面的方法
 
-  <button class="aaaa">qqqqq</button>
-  <button>ddddddddd</button>
-
-  <script>
-    // 通过对象可以找到原型，通过构造器可以找到构造函数
-    // 原型就是对象，对象就是原型，
-    // 构造函数当成对象调用时调用的原型是__proto__，它只能服务于自己
-    // 构造函数，new出来对象时，用的原型是prototype，往构造函数添加方法用的原型就是prototype
-    // Object.getPrototypeOf()可以找到原型
-    // Object.setPrototypeOf(a,b)可以设置父级原型,设置b为a的父级原型
-    // 一个函数内处理的结果可以使用return 返回，这样在调用函数的地方就可以用变量接收返回
-    // 原型链就是一个对象按照原型一级一级的向上查找，每一级的原型都会指向上一级的原型，每个原型之间都会链接起来。查找的这个过程，形成的这个链条就是原型链
-    // b.isPrototypeOf(a)  判断b对象是否在a对象的原型链上    检测一个对象是否在另一个对象的原型链上
-    // a instanceOf A  检测a对象的原型链上是否有构造函数A的prototype    检测一个对象的原型链上是否含有指定的构造函数得到prototype
-    // "name" in  a  检测name属性是否在a对象上，还会检测是否在a对象的原型链上
-    // a.hasOwnPrototype("name") 只检测当前对象，不会攀升至原型链  
-    // 使用call，apply可以借助其他原型上面的方法
-
-
-
-
-
-    function User(name) {
-      this.name = name
-    }
-    User.prototype.show = function () {
-      console.log(this.name)
-    }
-    // 这种方式往原型上添加属性，相当于是新创建了一个prototype属性，所以需要将constructor属性指向构造函数
-    User.prototype = {
-      // 将构造器指向构造函数
-      constructor: User,
-      xx() {
-        console.log(this.name)
-      },
-    }
-    let aa = new User("xxxx")
-
-    function xxxxxxxxx(obj, ...args) {
-      const constructor = Object.getPrototypeOf(obj).constructor
-      return new constructor(...args)
-    }
-
-    let bb = xxxxxxxxx(aa, "欣欣")
-    bb.xx() //欣欣
-
-
-
-    // 使用call，apply可以借助其他原型上面的方法
-
-    let jj = {
-      data: [41, 2, , 4, 1, 54, 545, 654654, 6465, 6765]
-    }
-    Object.setPrototypeOf(jj, {
-      max() {
-        return this.data.sort((a, b) => b - a)[0]
+      function User(name) {
+        this.name = name;
       }
-    })
-    console.log(jj.max()) //654654
+      User.prototype.show = function () {
+        console.log(this.name);
+      };
+      // 这种方式往原型上添加属性，相当于是新创建了一个prototype属性，所以需要将constructor属性指向构造函数
+      User.prototype = {
+        // 将构造器指向构造函数
+        constructor: User,
+        xx() {
+          console.log(this.name);
+        },
+      };
+      let aa = new User("xxxx");
 
-    let zh = {
-      lessons: {
-        js: 60,
-        html: 50,
-        css: 30
-      },
-
-      // getter
-      get data() {
-        return Object.values(this.lessons)
+      function xxxxxxxxx(obj, ...args) {
+        const constructor = Object.getPrototypeOf(obj).constructor;
+        return new constructor(...args);
       }
-    }
-    console.log(jj.max.apply(zh)) // 60
 
+      let bb = xxxxxxxxx(aa, "欣欣");
+      bb.xx(); //欣欣
 
+      // 使用call，apply可以借助其他原型上面的方法
 
-    let kk = {
-      data: [41, 2, , 4, 1, 54, 545, 654654, 6465, 6765]
-    }
-    Object.setPrototypeOf(kk, {
-      max(data) {
-        return data.sort((a, b) => b - a)[0]
-      }
-    })
-    console.log(kk.max(kk.data)) //654654
+      let jj = {
+        data: [41, 2, , 4, 1, 54, 545, 654654, 6465, 6765],
+      };
+      Object.setPrototypeOf(jj, {
+        max() {
+          return this.data.sort((a, b) => b - a)[0];
+        },
+      });
+      console.log(jj.max()); //654654
 
-    let zhh = {
-      lessons: {
-        js: 60,
-        html: 50,
-        css: 30
-      }
-    }
-    console.log(kk.max.call(zhh, Object.values(zhh.lessons))) // 60
+      let zh = {
+        lessons: {
+          js: 60,
+          html: 50,
+          css: 30,
+        },
 
+        // getter
+        get data() {
+          return Object.values(this.lessons);
+        },
+      };
+      console.log(jj.max.apply(zh)); // 60
 
-    // 使用call吗，apply借用别的原型上面的方法
-    // 栗子：借用数组的方法
-    let btns = document.querySelectorAll("button")
-    btns = Array.prototype.filter.call(btns, item => {
-      return item.hasAttribute("class")
-    })
-    console.log(btns)
-  </script>
-</body>
+      let kk = {
+        data: [41, 2, , 4, 1, 54, 545, 654654, 6465, 6765],
+      };
+      Object.setPrototypeOf(kk, {
+        max(data) {
+          return data.sort((a, b) => b - a)[0];
+        },
+      });
+      console.log(kk.max(kk.data)); //654654
 
+      let zhh = {
+        lessons: {
+          js: 60,
+          html: 50,
+          css: 30,
+        },
+      };
+      console.log(kk.max.call(zhh, Object.values(zhh.lessons))); // 60
+
+      // 使用call吗，apply借用别的原型上面的方法
+      // 栗子：借用数组的方法
+      let btns = document.querySelectorAll("button");
+      btns = Array.prototype.filter.call(btns, (item) => {
+        return item.hasAttribute("class");
+      });
+      console.log(btns);
+    </script>
+  </body>
 </html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 在类中使用构造函数constructor传递参数
+      // constructor在new时自动执行
+      class User {
+        constructor(name) {
+          this.name = name;
+          this.show = function () {};
+        }
+        getName() {
+          return this.name;
+        }
+      }
+      console.log(typeof User); //function    类就是个函数   类相当于是个语法糖
+
+      const xx = new User("xx");
+      console.log(xx);
+    </script>
+  </body>
+</html>
