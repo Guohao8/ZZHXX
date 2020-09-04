@@ -18,10 +18,23 @@
           return this.name;
         }
       }
-      console.log(typeof User); //function    类就是个函数   类相当于是个语法糖
+      console.log(typeof User); //function    类就是个函数   类相当于是个语法糖  class中定义的语法糖不能枚举
 
       const xx = new User("xx");
-      console.log(xx);
+      console.log(xx.name);
+
+      class Member {
+        constructor(name, age, sex) {
+          this.name = name;
+          this.age = age;
+          this.sex = sex;
+        }
+        static create(...args) {
+          return new this(...args);
+        }
+      }
+      let a = Member.create("xxx", "xx", 17);
+      console.log(a);
     </script>
   </body>
 </html>
