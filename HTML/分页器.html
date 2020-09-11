@@ -8,10 +8,6 @@
   <style>
     #pager {
       text-align: center;
-      /* line-height: 26px; */
-      background-color: black;
-      margin-left: 10px;
-      margin-top: 50px;
     }
 
     #pager li {
@@ -36,6 +32,33 @@
       background-color: #16ab95 !important;
     }
 
+
+
+    #aaa {
+      text-align: center;
+    }
+
+    #aaa li {
+      display: inline-block;
+      min-width: 20px;
+      height: 20px;
+      line-height: 20px;
+      margin: 5px;
+      cursor: pointer;
+      color: #999;
+      background-color: #fff;
+      border: 1px solid #f6f6f6;
+    }
+
+    #aaa span {
+      color: #999;
+      margin-left: 5px;
+    }
+
+    .j-curr {
+      color: #fff !important;
+      background-color: #16ab95 !important;
+    }
 
 
 
@@ -151,7 +174,67 @@
 
 
   </div>
+
+  <div id="xxx">
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+    <figure>
+      <figcaption>1发发开发商吗，深几十年肯康女士阿卡离开了奶粉加肯几女少女那么，咱女生出妈问你抚摸着你奥斯卡未付款没怎么VM爱我就看我看起来我可免费期望尽快打款吗</figcaption>
+      </a>
+      <span>2018/07/17</span>
+    </figure>
+
+  </div>
   <div id="pager"></div>
+  <div id="aaa"></div>
   <script>
     var pager = function () {
       //公共函数
@@ -205,6 +288,8 @@
         self.elem = T$$(self.container, 'figure'); //需要分页的元素
         self.elemTotalCount = self.elem.length || 0; //分页元素的总个数
         self.pageTotalCount = Math.ceil(self.elemTotalCount / self.options.elemShowCount) || 0; //总页数
+        console.log(self.options)
+        console.log(self.options.elemShowCount)
       };
 
       showPage.prototype = {
@@ -225,7 +310,7 @@
         showChangePageCont: function (currPageNum) {
           var self = this; //this为showPage对象
           var firstPageHtml = prevPageHtml = pageLinkHtml = nextPageHtml = lastPageHtml = pageTips =
-          ''; //firstPageHtml:首页   prevPageHtml:上一页  pageLinkHtml:页码表   nextPageHtml:下一页  lastPageHtml:尾页   pageTips:页码提示
+            ''; //firstPageHtml:首页   prevPageHtml:上一页  pageLinkHtml:页码表   nextPageHtml:下一页  lastPageHtml:尾页   pageTips:页码提示
           var startPage, endPage; //startPage:页码列表中的第一页   endPage:页码列表中的最后一页
           var pageShowMidCount = Math.ceil(self.options.pageShowCount / 2); //页码中间值，当超过这个值时，页码列表发生变化
           if (self.pageTotalCount <= self.options.pageShowCount) { //总页码数小于等于默认要显示的页码数时，直接在当前页面显示全部的页码
@@ -314,11 +399,21 @@
           var st = new showPage(bid, pid, options);
           st.showChangeElemCont(0);
           st.showChangePageCont(0);
-        }
+        },
+        onShowPageTwo: function (bid, pid, options) {
+          //调用主类
+          var xx = new showPage(bid, pid, options);
+          xx.showChangeElemCont(0);
+          xx.showChangePageCont(0);
+        },
       }
     }();
 
     pager.onShowPage('list', 'pager', {
+      elemShowCount: 2,
+      pageShowCount: 3
+    });
+    pager.onShowPageTwo('xxx', 'aaa', {
       elemShowCount: 2,
       pageShowCount: 3
     });
