@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      let lessons = [
+        { title: "媒体查询响应式布局", category: "css" },
+        { title: "FLEX 弹性盒模型", category: "css" },
+        { title: "MYSQL多表查询随意操作", category: "mysql" },
+      ];
+
+      for (const key in lessons) {
+        console.log(key);
+        console.log(lessons[key]);
+        console.log(`标题: ${lessons[key].title}`);
+      }
+
+      let lessonss = [
+        { title: "媒体查询响应式布局", category: "css" },
+        { title: "FLEX 弹性盒模型", category: "css" },
+        { title: "MYSQL多表查询随意操作", category: "mysql" },
+      ];
+
+      for (const item of lessonss) {
+        console.log(item); //{title: "媒体查询响应式布局", category: "css"}category: "css"title: "媒体查询响应式布局"__proto__: Object
+        // {title: "FLEX 弹性盒模型", category: "css"}
+        // {title: "MYSQL多表查询随意操作", category: "mysql"}
+
+        console.log(`
+                  标题: ${item.title}
+                  栏目: ${item.category == "css" ? "前端" : "数据库"}
+            `);
+        // 标题: 媒体查询响应式布局
+        // 栏目: 前端
+        // 标题: FLEX 弹性盒模型
+        // 栏目: 前端
+        // 标题: MYSQL多表查询随意操作
+        // 栏目: 数据库
+      }
+    </script>
+  </body>
+</html>
