@@ -5,5 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
   </head>
-  <body></body>
+  <body>
+    <button>xxxx</button>
+    <script>
+      let module = (function () {
+        // 模块列表集合，把声明的模块都放到一个容器里面  存储模块
+        const moduleLists = {};
+        // name表示模块名。modules表示是否依赖哪个模块,他是一个数组形式，action表示一些动作自己写的一些属性或方法
+        // define函数   （方法）  用来 定义模块
+        function define(name, modules, action) {
+          // modules表示要继承的依赖模块，所以既然你要依赖的话，那么就要从容器里面拿出来
+          // m表示要依赖的模块名，他是一个数组，i表示数组的标号 下标
+          modules.map((m, i) => {
+            //通过模块名将模块从容器里面拿出来
+            // 在赋值给modules，这样就可以从容器中通过name名 拿出来
+            modules[i] = moduleLists[m];
+          });
+          // 将定义的模块放到容器里面
+          // 将按模块名字放到moduleLists容器里面
+          // 将依赖的模块数据作为参数放到这个action里面，然后定义函数时可以在function内调用
+          moduleLists[name] = action.apply(null, modules);
+        }
+        //把这个函数返回出去，外部调用时就可以执行这个函数了
+        return { define };
+      })();
+
+      // 模块只有在初始化时才会执行，比如在hd模块内console.log("xx")。
+      // 在别的模块内依赖hd模块时，并不也会打印console.log("xx")
+      // 用的时候 用的是初始化结束后的结果
+      // 当有了多个模块依赖同一个模块时，他们公用一个内容也就是其中有一个模块内改了某一个方法时，其他模块内也会被改变
+
+      // 使用module的define方法  声明一个模块 不依赖其他模块
+      module.define("hd", [], function () {
+        return {
+          first(arr) {
+            return arr[0];
+          },
+          max(arr, key) {
+            return arr.sort((a, b) => b[key] - a[key])[0];
+          },
+        };
+      });
+
+      // 使用module的define方法  声明一个模块  并且依赖hd模块
+      module.define("lesson", ["hd"], function (hd) {
+        let data = [
+          { name: "js", price: 99 },
+          { name: "css", price: 88 },
+        ];
+        console.log(hd.max(data, "price"));
+      });
+
+      //  指令总结
+      // 表达式	说明
+      // export function show(){}	导出函数
+      // export const name='后盾人'	导出变量
+      // export class User{}	导出类
+      // export default show	默认导出
+      // const name = '后盾人'
+      // export {name}	导出已经存在变量
+      // export {name as hd_name}	别名导出
+      // import defaultVar from 'houdunren.js'	导入默认导出
+      // import {name,show} from 'a.j'	导入命名导出
+      // Import {name as hdName,show} from 'houdunren.js'	别名导入
+      // Import * as api from 'houdunren.js'	导入全部接口
+    </script>
+  </body>
 </html>

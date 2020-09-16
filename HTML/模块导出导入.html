@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script type="module">
+      "use strict";
+      // 首先需要export导出接口供外部使用
+      // 外部使用import导入相应的接口就可使用
+      //在浏览器中使用是需要在script标签加上属性type="modules"
+      import { aa, show } from "../js/模块导出导入.js";
+      console.log(aa);
+      show();
+
+      import {} from "../js/模块导出导入.js";
+      import {} from "../js/模块导出导入2.js";
+    </script>
+  </body>
+</html>
