@@ -6,5 +6,80 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Document</title>
   </head>
-  <body></body>
+  <body>
+    <script>
+      // test()  是属于正则表达式的方法
+      // match()  是属于字符串的方法
+
+      let a = "asd5645as545as4das4d56as456";
+      // parseInt 解析字符串
+      console.log(Number.isNaN(parseInt("a"))); //true
+      console.log(Number.isNaN(parseInt("9"))); //false
+      console.log(Number.isNaN(parseInt(a)));
+      let x = [...a].filter(a => !Number.isNaN(parseInt(a)));
+      console.log(x); //["5", "6", "4", "5", "5", "4", "5", "4", "4", "5", "6", "4", "5", "6"]
+      console.log(x.join("")); //56455454456456
+      console.log(a.match(/\d/g).join("")); //56455454456456
+
+      //  选择符
+      //  a|b   或的意思    匹配两边表达式任意只要含有就返回true
+      //  \  转义字符
+      //  [] => 原子组   ()=>原子表
+      let b = "010-9999999";
+      console.log(/010|020\-\d{7,8}/.test(b)); //true
+      console.log(/(010|020)\-\d{7,8}/.test(b)); //true
+
+      //  . 第一层含义是匹配除了换行符外的所有字符  第二层含义是普通点   如果当普通点用时，需要用\转义符将  .  转换为普通点含义  \.
+
+      //在字面量里面/   /       \d代表着是正则表达式里面匹配数字的含义
+      //在使用对象创建正则表达式时   \d表示的意思就是d    需要在前面再加一个转义符\才能转换为匹配函数的意思   \\d       小数点也一样 也是需要再加一个转义符 \\.
+      // 因为在字符串里面d代表的意思就是普通的d  加一个\代表的还是d的意思
+      // + 加号代表的意思一个或多个
+      // *  星号表示零个或多个
+      // ？问号代表零个或一个
+      let c = new RegExp("\\d+\\.+\\d");
+      let d = 8.22;
+      console.log(c.test(d)); //true
+      //限定边界  ^限定起始位置   $限定结束位置
+      let f = new RegExp("^\\d");
+      let f1 = "a3";
+      let f2 = "3a";
+      console.log(f.test(f1)); //false
+      console.log(f.test(f2)); //true
+      let g = new RegExp("\\d$");
+      let g1 = "a3";
+      let g2 = "3a";
+      console.log(g.test(g1)); //true
+      console.log(g.test(g2)); //false
+      let h = new RegExp("^\\d\\w$");
+      let h1 = "12a";
+      let h2 = "as21";
+      let h3 = "1a1";
+      let h4 = "a2a";
+      console.log(h.test(h1));
+      console.log(h.test(h2));
+      console.log(h.test(h3));
+      console.log(h.test(h4));
+
+      // [] 原子表内  使用^符号的意思是  匹配除了表达式以外的     [^\d]   表示匹配除了数字的
+      let j = `
+      张三:666666666,
+      里斯:999999999
+      `;
+      console.log(j.match(/[^\d:,\s]+/g));
+
+      //  \s  表示匹配空白
+      console.log(/\s/.test("     sb"));
+
+      //  \S  表示除了空白
+      console.log(/\S/.test(" xxxx"));
+
+      //  \w  表示匹配数字，字母，下划线
+      // \W   表示匹配除了数字，字母，下划线
+
+      //  .   表示匹配换行符以外 的所有字符
+
+      // [\d\D]+      [\s\S]+   匹配任何字符     +加号代表匹配多个
+    </script>
+  </body>
 </html>
