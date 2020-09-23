@@ -196,6 +196,9 @@
 
       //then
       // 如果上一个then返回的是一个普通的值,那么下一个then就可以接到,promise默认下返回的就是成功
+      // 如果要让下一个then使用本次then的结果,那么必须需要return出去
+      // 如果不return出去,那么下一then处理是对上次then进行处理,而不是对return出去的结果进行处理
+      // 只要返回那么后面的then就是对返回的promise进行处理
       let xx = new Promise((resolve, reject) => {
         resolve("xxxxxxxx");
       })
