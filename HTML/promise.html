@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <style>
+      img {
+        height: 1200px;
+        width: 700px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      // 先把主任务执行完之后，然后再通过轮询的形式遍历任务队列，他会不断的遍历
+      // 先执行主线程的任务,当遇到异步时将任务交给一个模块,然后这个模块内它会让里面的任务完成,完成后他在将任务放到任务队列里面去,
+      // 等主线程的任务都完成后,它会再去任务队列里面一直轮询查看有没有任务,如果有就将任务放到主线程执行,没有就完事了
+      // 把任务交给某个模块,等模块执行完后,再将任务放到任务队列里面去,等主线程的任务都执行完了再去任务队列里面,轮询查看有没有任务,有的话就放到主线程然后执行
+
+      // 遇到异步时将需要进行的异步操作放到模块内在,模块进行异步操作,操作完成后,模块再往任务队列里面放由模块内处理好的异步操作,然后主线程再一直轮询任务队列看有没有任务,有的话就将任务放到主线程执行
+
+      // 一定要是等主线程的执行完后,再会去轮询执行任务队列里面的任务,如果主线程的任务执行时间非常长,那任务队列里面的任务也要等着,只有主线程执行完后才会去轮询执行任务队列的任务,毕竟 JavaScript是单线程
+
+      // 模块内没有队列之说,谁先加载完成,就把谁放到任务队列里面
+
+      // 这里面是主任务线程
+
+      //一个promise必须有一个then方法处理状态的改变
+      //Promise包含pending、fulfilled、rejected三种状态
+      // pending 指初始等待状态，初始化 promise 时的状态
+      // resolve 指回调成功，将 promise 状态设置为fulfilled
+      // reject 指回调失败，将 promise 状态设置为rejected
+      // promise 是生产者，通过 resolve 与 reject 函数告之结果
+      // promise 非常适合需要一定执行时间的异步任务
+      // 状态一旦改变将不可更改
+
+      function loadImage(file, resolve, reject) {
+        const image = new Image();
+        image.src = file;
+        image.onload = () => {
+          resolve(image);
+        };
+        image.onerror = () => {
+          reject();
+        };
+      }
+
+      // 这里面是要放到任务队列的任务
+      // 先把主要的工作都完成,再执行加载图片,加载完之后再把任务抛到任务队列里面
+      // 将加载图片这个任务放到一个加载模块内，然后他在去执行主线程，等主线程的执行完后，
+      // 主任务线程里面已经没有任务了，他会再到任务队列里面一直轮询，查看有没有任务，有的话再执行
+      loadImage(
+        "/img/xx.jpg",
+        // 要放到任务队列里面的任务
+        image => {
+          document.body.appendChild(image);
+        },
+        () => {
+          console.log("失败");
+        }
+      );
+      // JS有两个任务队列,一个为微任务队列,一个为宏任务队列,以微任务队列为主
+      // promise有一个任务队列,称为微任务队列
+      new Promise((resolve, reject) => {
+        resolve("操作成功");
+        // reject("操作失败")
+      }).then(
+        value => {
+          console.log("成功 1");
+        },
+        reason => {
+          console.log("失败");
+        }
+      );
+
+      //执行顺序优先级
+      // 1.主线程即同步任务  <= 2.微任务(promise成功回调的任务) <= 3.宏任务
+      // promise 创建时即立即执行即同步任务，then 会放在异步微任务中执行，需要等同步任务执行后才执行
+      // 程序需要将主任务执行完成才会执行异步队列任务
+      // 1.
+      console.log("object"); //立即执行的     //object
+
+      // 2.
+      // 当执行时检测到setTimeout时会将setTimeout放到宏任务.任务队列里面,准备执行,主线程执行完后,它在执行
+      setTimeout(() => {
+        console.log("setTimeout"); //它后执行  2
+      }, 0);
+      console.log("object"); //他会先执行   1
+
+      // 3.
+      //在promise构造函数中的代码会进入主线程执行,同步执行
+      new Promise(resolve => {
+        console.log("resolve"); //它会先执行   1
+      });
+      console.log("object"); //它在后执行     2
+
+      // 4.
+      // promise构造函数内会进入主线程同步执行,然后再执行主线程剩下的任务,再去执行微任务里面的任务
+      new Promise(resolve => {
+        resolve(); //走到这里的时候会把then成功回调的处理放到微任务队列里面,先执行完主线程,然后再去微任务里面轮询执行
+        // 如果不成功回调那么then里面的任务也不会执行
+        console.log("resolve"); //他会先执行  1
+      }).then(value => {
+        console.log("value"); //它最后执行  2
+      });
+      console.log("object"); //它再执行   3
+
+      //5.
+      //它是宏任务排在第三位执行,第一位是同步的也就是主线程,第二位是微任务
+      setTimeout(() => {
+        console.log("setTimeout"); //第四个执行
+      }, 0);
+      new Promise(resolve => {
+        resolve(); //走到这里的时候会产生微任务
+        console.log("resolve"); //    第一个执行
+      }).then(value => {
+        console.log("value"); //第三个执行
+      });
+      console.log("object"); //第二个执行
+
+      //6.
+      //将微任务放入到宏任务内,需要将宏任务执行完后再去执行微任务,因为执行到宏任务时,他会把任务放到主线程里面执行,
+      //主线程里面是需要全部完成后才会执行别的任务队列里面的任务,当在主线程内又检测到微任务时,他会把微任务放到微任务队列里面,
+      //等主线程的任务全部执行完后,再去轮询微任务队列
+      // 在主线程内他是同步顺序执行的,所有在setTimeout里面是按顺序从上向下执行
+      let promise = new Promise(resolve => {
+        setTimeout(() => {
+          console.log("setTimeout2"); //第三个执行
+          resolve();
+          console.log("setTimeout1"); //第四个执行
+        }, 0);
+        console.log("promise"); //第一个执行
+      }).then(value => console.log("value")); //第五个执行
+      console.log("object"); //第二个执行
+
+      // then方法
+      // promise处理异步操作，then 用于处理返回结果
+      // then返回的也是promise
+      //每次的 then 都是一个全新的 promise，不要认为上一个 promise状态会影响以后then返回的状态
+      new Promise((resolve, reject) => {
+        reject();
+      })
+        .then(
+          resolve => console.log("fulfilled"),
+          reject => console.log("rejected")
+        )
+        .then(
+          resolve => console.log("fulfilled"),
+          reject => console.log("rejected")
+        )
+        .then(
+          resolve => console.log("fulfilled"),
+          reject => console.log("rejected")
+        );
+      //  执行结果如下
+      //   rejected
+      //   fulfilled
+      //   fulfilled
+
+      //如果 then 返回promise 时，后面的then 就是对返回的 promise 的处理，需要等待该 promise 变更状态后执行
+      let promise2 = new Promise(resolve => resolve());
+      let p1 = promise
+        .then(() => {
+          return new Promise(resolve => {
+            setTimeout(() => {
+              console.log(`p1`);
+              resolve();
+            }, 2000);
+          });
+        })
+        .then(() => {
+          return new Promise((a, b) => {
+            console.log(`p2`);
+          });
+        });
+
+      //如果then返回 promise 时，返回的promise 后面的then 就是处理这个promise 的
+      //如果不 return 情况就不是这样了，即外层的 then 的promise 和内部的promise 是独立的两个promise
+      new Promise((resolve, reject) => {
+        resolve();
+      })
+        .then(v => {
+          return new Promise((resolve, reject) => {
+            resolve("第二个promise");
+          });
+        })
+        .then(value => {
+          console.log(value);
+          return value;
+        })
+        .then(value => {
+          console.log(value);
+        });
+
+      //then
+      // 如果上一个then返回的是一个普通的值,那么下一个then就可以接到,promise默认下返回的就是成功
+      let xx = new Promise((resolve, reject) => {
+        resolve("xxxxxxxx");
+      })
+        .then(
+          value => {
+            return "xinxin";
+          },
+          reason => console.log("失败")
+        )
+        .then(abc => {
+          console.log(abc);
+        });
+      // 如果上一个then返回的是一个promise,
+      let xx = new Promise((resolve, reject) => {
+        resolve("xxxxxxxx");
+      })
+        .then(
+          value => {
+            return new Promise((resolve, reject) => {
+              //如果在此没有对promise进行处理,promise的状态没有改变,那么后面的永远不会执行,那么下面需要调用会一直等,只有等他处理了之后,下面调用它的才会执行
+              console.log("xinxin");
+            });
+          },
+          reason => console.log("失败")
+        )
+        .then(abc => {
+          console.log(abc);
+        });
+    </script>
+  </body>
+</html>
