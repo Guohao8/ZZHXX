@@ -20,6 +20,13 @@
       background: yellowgreen;
       position: absolute;
     }
+
+    button {
+      display: inline-block;
+      position: absolute;
+      width: 50px;
+      height: 50px;
+    }
   </style>
 </head>
 
@@ -548,23 +555,9 @@
     }
     queue([1, 2, 3, 4, 5])
 
-    // reduce  实现任务队列，队列请求
-    // reduce方法里面的匿名函数会多一个值为pre,这个值的意义是上一次返回的结果  
-    // reduce 有两个参数，第一个参数是匿名函数，第二个参数是初始值 它会赋值给第一次的pre
-    // arr.reduce(function(pre,value,index,array))
-    //  第一个参数是执行函数，第二个参数为初始值
-    // 传入第二个参数时将所有元素循环一遍
-    // 不传第二个参数时从第二个元素开始循环
-    // 函数参数说明如下
-    // 参数	说明
-    // prev	上次调用回调函数返回的结果
-    // value	当前的元素值
-    // index	当前的索引
-    // array	原数组
+
     let arrayFFF = [1, 2, 4, 57, 5, 76, ]
-    // reduce第一个参数里面，pre为1  value为2
-    // 如果里面进行计算或者比较，那么pre就会作为计算或比较出来的值 value作为下一个值
-    // 如果设置了默认值   那么pre就为默认值， value为1
+
     function query(num) {
       num.reduce((promise, n) => {
         // 需要将
@@ -579,6 +572,121 @@
         })
       }, Promise.resolve()) //这个初始值赋值给了num.reduce(promise,n)中的promise
     }
+
+    // 后台请求处理类
+    // export default function (url) {
+    //   return new Promise((resolve, reject) => {
+    //     let xhr = new XMLHttpRequest()
+    //     xhr.open('GET', url)
+    //     xhr.send()
+    //     xhr.onload = function () {
+    //       if (this.status === 200) {
+    //         resolve(this.response)
+    //       } else {
+    //         reject(this)
+    //       }
+    //     }
+    //   })
+    // }
+    // // 队列处理类
+    // export default function (promises) {
+    //   promises.reduce((promise, next) => promise.then(next), Promise.resolve())
+    // }
+
+
+    // async  await
+    //  async & await 就是promise和then的语法糖，async 就相当于是promise  await相当于是then
+    // await必须要写到async里面  async里面可以没有await  但await必须要跟着async
+    // 使用 async/await 是promise 的语法糖，可以让编写 promise 更清晰易懂，也是推荐编写promise 的方式。
+    // async/await 本质还是promise，只是更简洁的语法糖书写
+    // async/await 使用更清晰的promise来替换 promise.then/catch 的方式
+    //     await
+    // 使用 await 关键词后会等待promise 完
+    // await 后面一般是promise，如果不是直接返回
+    // await 必须放在 async 定义的函数中使用
+    // await 用于替代 then 使编码更优雅
+    async function qq() {
+      let pp = await new Promise((resolve) => {
+        resolve(601)
+      })
+      console.log(pp)
+
+      let ww = await new Promise((resolve) => {
+        resolve(604)
+      })
+      console.log(ww)
+    }
+    qq()
+
+    // 延时输出函数
+    async function sleep(delay = 1500) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve()
+        }, delay)
+      })
+    }
+    async function ee() {
+      for (const user of ["xinxin", "feifei"]) {
+        await sleep()
+        console.log(user)
+      }
+    }
+    ee();
+
+
+    // 如果一个类里面包装了一个then方法，那么它会包装成一个promise
+
+    // await并发
+    async function p100() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log("644");
+          resolve();
+        }, 2000);
+      });
+    }
+    async function p200() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log("652");
+          resolve();
+        }, 2000);
+      });
+    }
+
+    // 使用promise.all
+    async function hh() {
+      await Promise.all([p100(), p200()])
+    }
+    hh()
+
+    // await并发
+    async function p300() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log(668);
+          resolve();
+        }, 2000);
+      });
+    }
+    async function p400() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          console.log(676);
+          resolve();
+        }, 2000);
+      });
+    }
+    // 让promise先执行，在执行await
+    async function mm() {
+      let p300 = p300();
+      let p400 = p400();
+      let p300value = await p300;
+      let p400value = await p400;
+      console.log(p300value, p400value)
+    }
+    mm()
   </script>
 </body>
 
