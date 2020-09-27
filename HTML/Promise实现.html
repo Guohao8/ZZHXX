@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // promise核心就是有状态,有值
+    // 最开始有三种状态,准备中,已成功,已失败
+    // 首先声明定义类并声明Promise状态与值。
+    // executor为执行者
+    // 当执行者出现异步时触发拒绝状态,将错误放到catch里面处理
+    // 使用静态属性保存状态值
+    // 状态只能改变一次，所以在resolve与reject添加条件判断
+    // 因为 resolve或rejected方法在executor中调用，作用域也是executor作用域，这会造成this指向window，现在我们使用的是class定义，this为undefined。
+    class Pro {
+      // 因为状态的值是固定的所有就定义成静态属性
+      static PENDING = 'pending'; //准备中
+      static FULFILLED = 'fulfilled'; //已成功
+      static REJECTED = 'rejected'; //拒绝 已失败
+      // executor  意思相当于是执行者,就相当于是Promise的resolve,reject
+      constructor(executor) {
+        // 要有状态和值   起初默认为准备状态   默认有值的
+        this.status = Pro.PENDING;
+        this.value = null;
+        // 在构造函数中添加callback来保存pending状态时处理函数，当状态改变时循环调用
+        // 执行promise函数体内遇到异步时,先将要执行的内容放到一个数组,然后等状态改变之后，从这里面拿出来执行
+        this.callback = []
+        // 下一步就是要执行,需要将参数传递进去,因为是用类方法写的所以调用时需要用this
+        // 这个this当前并不是当前对象
+        // 因为在下面函数内调用了执行者方法,所以当前的this是下面函数的上下文,this是window,
+        // 当前在class严格模式下, 所以this是undefined
+        // 解决方法是,调用该方法时人为的改变一下, 使用bind(this),将this改变为当前的this
+        // 当在Promise函数执行体内发生错误时,需要将状态改变为reject,
+        // 所以在这使用try/catch方法当拒绝时,直接调用拒绝方法就行
+        try {
+          executor(this.resolve.bind(this), this.reject.bind(this));
+        } catch (error) {
+          this.reject(error)
+        }
+      }
+      // 用类方法写reject,resolve参数
+      // 执行成功回调方法
+      resolve(value) {
+        // 在class里面默认遵循的是严格模式,所以当前的this指向是undefined
+        // console.log(this)  //undefined
+        // 当调了执行者的方法后就要改变promise的值和状态
+        // 只要当Promise状态等于准备状态的情况下,才可以更改状态,否则不可以更改
+        if (this.status == Pro.PENDING) {
+          // 状态为解决状态
+          this.status = Pro.FULFILLED;
+          // 值为获取到的值
+          this.value = value;
+          // 当产生异步时，将压在callback里面的成功(onFulfilled)函数，在调出来执行
+          // 添加处理callback方法
+          // 如果不加定时器它会立刻执行，promise的核心就是异步操作，所以给他加一个定时器放到任务队列里面
+          setTimeout(() => {
+            this.callback.map(v => {
+              v.onFulfilled(value)
+            })
+          })
+        }
+      }
+      // 执行失败回调方法
+      reject(reason) {
+        // 只要当Promise状态等于准备状态的情况下,才可以更改状态,否则不可以更改
+        if (this.status == Pro.PENDING) {
+          // 状态为拒绝状态
+          this.status = Pro.REJECTED;
+          // 值为拒绝的原因
+          this.value = reason;
+          // 当产生异步时，将压在callback里面的拒绝(onRejected)函数，在调出来执行
+          // 添加处理callback方法
+          // 如果不加定时器它会立刻执行，promise的核心就是异步操作，所以给他加一个定时器放到任务队列里面
+          setTimeout(() => {
+            this.callback.map(v => {
+              v.onRejected(reason)
+            })
+          })
+        }
+      }
+      // 参数为两个函数,函数构建好后,自动执行该函数
+      // then的每个方法都不是必须的，所以当没有传递时给上默认值
+      // 当执行then传递的函数发生异常时，统一交给onRejected来处理错误
+      // 在then方法中添加保存执行函数到 callback 数组中
+      then(onFulfilled, onRejected) {
+        // then方法,在不传reject时,可以传null也不报错.传resolve时不用穿reject
+        // 所以为了实现该条件 判断类型如果不是一个函数，那么自己封装出一个函数
+        // 封装一个成功的函数
+        if (typeof onFulfilled !== 'function') {
+          onFulfilled = () => {}
+        }
+        // 封装一个失败的函数
+        if (typeof onRejected !== 'function') {
+          onRejected = () => {}
+        }
+
+        // 如果状态改变为异步时，也就是promise函数体内有异步操作，比如定时器时，需要判断当前状态是不是为等待状态，在进行处理
+        if (this.status == Pro.PENDING) {
+          // 将执行成功回调时的函数和执行失败回调时的函数压到这个数组里面
+          // 当promise状态为准备状态时，那么肯定会走到这，然后在这再将对成功回调时的函数和对拒绝回调时的函数添加到数组内，
+          // 然后再回到处理成功状态解决函数(reject)内将callback数组遍历轮询执行相应的函数
+          // 和处理失败状态解决函数(reject)内将callback数组遍历轮询执行相应的函数
+          this.callback.push({
+            // 要在reject方面里面调用onFulfilled函数所以要接收值需要将value写上
+            // 这个onFulfilled是对象属性
+            onFulfilled: value => {
+              // 在这里做一步错误处理，将错误都交给onRejected来处理
+              try {
+                // 这个onFulfilled是then要执行的函数
+                onFulfilled(value)
+              } catch (error) {
+                onRejected(error)
+              }
+            },
+            // 这个onRejected是对象属性
+            onRejected: value => {
+              // 在这里也是做一步错误处理，将错误都交给onRejected来处理
+              try {
+                // onRejected是then要执行的函数
+                onRejected(value)
+              } catch (error) {
+                onRejected(error)
+              }
+            },
+          })
+        }
+        // reject改变后onFulfilled获取到改变后的值
+        // 如果当前状态为成功状态的时候才执行
+        if (this.status == Pro.FULFILLED) {
+          setTimeout(function () {
+            try {
+              onFulfilled(this.value)
+            } catch (error) {
+              onRejected(error)
+            }
+          })
+        }
+        // 如果当前状态为拒绝状态的时候才执行
+        if (this.status == Pro.REJECTED) {
+          setTimeout(function () {
+            try {
+              onRejected(this.value)
+            } catch (error) {
+              onRejected(error)
+            }
+          })
+        }
+      }
+    }
+
+    let xx = new Pro((resolve, reject) => {
+      setTimeout(function () {
+        resolve("xxx")
+        console.log(161)
+      }, 1000)
+    }).then(value => {
+      console.log(value)
+    }, reason => {
+      console.log(reason)
+    })
+    console.log("xx")
+  </script>
+</body>
+
+</html>

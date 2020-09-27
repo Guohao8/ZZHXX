@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    // JS是单线程
+    // 它只有一个主线程来执行完成任务，JS还有一个任务队列
+    //  JS会从任务队列一直查询有没有任务，有的话就抓取过来放到主线程，然后再执行，如果没有任务的话主线程就休眠
+    // 任务队列又分为宏任务队列和微任务队列，微任务队列的优先级高于宏任务队列，
+    // 宏任务：I/O  setTimeout  setInterval    requestAnimationFrame    setImmediate(node)
+    // 微任务：process.nextTick     Promise.then catch finally    MutationObserver(node) 
+    // JavaScript 处理任务是在等待任务、执行任务 、休眠等待新任务中不断循环中，也称这种机制为事件循环。
+    // 事件循环(Event Loop)是为了协调事件，用户交互，脚本，UI渲染和网络处理等行为，防止主线程不阻塞
+    // 主线程中的任务执行完后，才执行任务队列中的任务
+    // 有新任务到来时会将其放入队列，采取先进先执行的策略执行队列中的任务
+    // 比如多个 setTimeout 同时到时间了，就要依次执行
+    // 任务包括 script(整体代码)、 setTimeout、setInterval、DOM渲染、DOM事件、Promise、XMLHTTPREQUEST等
+    // 实例化 Promise 时执行的代码是同步的
+    // 任务的执行顺序是同步任务、微任务、宏任务
+    // JS执行时，一定是先把主线程的任务执行完后再去轮询队列里面的任务，就算先解析到宏任务或者微任务，都是要把他们先放到任务队列里面
+    // 然后等同步任务执行完以后，任务队列里面的任务再去执行，只要主线程里面的任务没执行完成，那么任务队列里面的任务就要一直等着，
+    // 如果宏任务先被解析到,那么会把它到一个模块内,同步任务执行的时候,模块内也会在执行异步任务,只要异步任务完成就会把完成后的结果放到任务队列,
+    // 等同步任务执行完后,直接放到主线程内将结果直接不会再等异步操作,比如定时器的时间,不用再等,会直接执行
+    // 多个定时器他不会一起执行,他是一个一个执行的,按照顺序执行的
+    let k = 0;
+    setTimeout(() => {
+      console.log(++k); //1
+    }, 1000);
+
+    setTimeout(() => {
+      console.log(++k); //2
+    }, 1000);
+
+
+    //先执行同步任务,等同步任务执行完成后,再执行异步任务,
+    setTimeout(function () {
+      console.log(44) //2
+    }, 1000)
+    setTimeout(function () {
+      console.log(47) //3
+    }, 1000)
+    for (var i = 0; i < 10000; i++) {
+      console.log("------") //1
+    }
+    // 多个定时器,哪个时间短先执行哪个
+    setTimeout(function () {
+      console.log(44) //3
+    }, 2000)
+    setTimeout(function () {
+      console.log(47) //2
+    }, 1000)
+    for (var q = 0; q < 10000; q++) {
+      console.log("------") //1
+    }
+  </script>
+</body>
+
+</html>
