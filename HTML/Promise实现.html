@@ -101,57 +101,75 @@
           onRejected = () => {}
         }
 
-        // 如果状态改变为异步时，也就是promise函数体内有异步操作，比如定时器时，需要判断当前状态是不是为等待状态，在进行处理
-        if (this.status == Pro.PENDING) {
-          // 将执行成功回调时的函数和执行失败回调时的函数压到这个数组里面
-          // 当promise状态为准备状态时，那么肯定会走到这，然后在这再将对成功回调时的函数和对拒绝回调时的函数添加到数组内，
-          // 然后再回到处理成功状态解决函数(reject)内将callback数组遍历轮询执行相应的函数
-          // 和处理失败状态解决函数(reject)内将callback数组遍历轮询执行相应的函数
-          this.callback.push({
-            // 要在reject方面里面调用onFulfilled函数所以要接收值需要将value写上
-            // 这个onFulfilled是对象属性
-            onFulfilled: value => {
-              // 在这里做一步错误处理，将错误都交给onRejected来处理
+        // Promise中的then是链式调用执行的，所以then也要返回Promise才能实现
+        // then的onReject函数是对前面Promise的rejected的处理
+        // 但该Promise返回状态要为fulfilled，所以在调用onRejected后改变当前promise为fulfilled状态
+        // then就是返回一个新的promise    将操作包裹在一个新的promise里面再返回出去，形成一个链式调用
+        return new Pro((resolve, reject) => {
+          // 如果状态改变为异步时，也就是promise函数体内有异步操作，比如定时器时，需要判断当前状态是不是为等待状态，在进行处理
+          if (this.status == Pro.PENDING) {
+            // 将执行成功回调时的函数和执行失败回调时的函数压到这个数组里面
+            // 当promise状态为准备状态时，那么肯定会走到这，然后在这再将对成功回调时的函数和对拒绝回调时的函数添加到数组内，
+            // 然后再回到处理成功状态解决函数(reject)内将callback数组遍历轮询执行相应的函数
+            // 和处理失败状态解决函数(reject)内将callback数组遍历轮询执行相应的函数
+            this.callback.push({
+              // 要在reject方面里面调用onFulfilled函数所以要接收值需要将value写上
+              // 这个onFulfilled是对象属性
+              onFulfilled: value => {
+                // 在这里做一步错误处理，将错误都交给onRejected来处理
+                try {
+                  // 这个onFulfilled是then要执行的函数
+                  let getResult = onFulfilled(value)
+                  resolve(getResult)
+                } catch (error) {
+                  onRejected(error)
+                }
+              },
+              // 这个onRejected是对象属性
+              onRejected: value => {
+                // 在这里也是做一步错误处理，将错误都交给onRejected来处理
+                try {
+                  // onRejected是then要执行的函数
+                  let getResult = onRejected(value)
+                  resolve(getResult)
+                } catch (error) {
+                  onRejected(error)
+                }
+              },
+            })
+          }
+          // reject改变后onFulfilled获取到改变后的值
+          // 如果当前状态为成功状态的时候才执行
+          if (this.status == Pro.FULFILLED) {
+            setTimeout(function () {
               try {
-                // 这个onFulfilled是then要执行的函数
-                onFulfilled(value)
+                // promise返回的状态为成功时，then调用该成功方法
+                // 改变promise状态的时候取到该函数的返回值，取到的值传递给下一个then
+                // 取到执行成功状态时执行函数的内容  
+                let getResult = onFulfilled(this.value)
+                // 然后再传给下一个then调用  实现链式调用
+                resolve(getResult)
               } catch (error) {
                 onRejected(error)
               }
-            },
-            // 这个onRejected是对象属性
-            onRejected: value => {
-              // 在这里也是做一步错误处理，将错误都交给onRejected来处理
+            })
+          }
+          // 如果当前状态为拒绝状态的时候才执行
+          if (this.status == Pro.REJECTED) {
+            setTimeout(function () {
               try {
-                // onRejected是then要执行的函数
-                onRejected(value)
+                // promise返回的状态为失败时，then调用该失败方法
+                // 改变promise状态的时候取到该函数的返回值，取到的值传递给下一个then
+                // 取到拒绝成功状态时执行函数的内容  
+                let getResult = onRejected(this.value)
+                // 因为then的状态是要是成功状态所以要调用resolve方法
+                resolve(getResult)
               } catch (error) {
                 onRejected(error)
               }
-            },
-          })
-        }
-        // reject改变后onFulfilled获取到改变后的值
-        // 如果当前状态为成功状态的时候才执行
-        if (this.status == Pro.FULFILLED) {
-          setTimeout(function () {
-            try {
-              onFulfilled(this.value)
-            } catch (error) {
-              onRejected(error)
-            }
-          })
-        }
-        // 如果当前状态为拒绝状态的时候才执行
-        if (this.status == Pro.REJECTED) {
-          setTimeout(function () {
-            try {
-              onRejected(this.value)
-            } catch (error) {
-              onRejected(error)
-            }
-          })
-        }
+            })
+          }
+        })
       }
     }
 
@@ -164,6 +182,8 @@
       console.log(value)
     }, reason => {
       console.log(reason)
+    }).then(value => {
+      console.log(value)
     })
     console.log("xx")
   </script>
